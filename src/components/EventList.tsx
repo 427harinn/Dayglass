@@ -4,9 +4,10 @@ import type { DayglassEvent } from '../features/schedule/scheduleTypes';
 
 type EventListProps = {
   events: DayglassEvent[];
+  onDeleteEvent: (eventId: string) => void;
 };
 
-export function EventList({ events }: EventListProps) {
+export function EventList({ events, onDeleteEvent }: EventListProps) {
   return (
     <div className="event-list">
       {events.map((event) => (
@@ -23,6 +24,14 @@ export function EventList({ events }: EventListProps) {
             </div>
             <p>{eventTypeLabels[event.type]}{event.memo ? ` / ${event.memo}` : ''}</p>
           </div>
+          <button
+            className="event-row__delete"
+            type="button"
+            aria-label={`${event.title}を削除`}
+            onClick={() => onDeleteEvent(event.id)}
+          >
+            削除
+          </button>
         </article>
       ))}
     </div>

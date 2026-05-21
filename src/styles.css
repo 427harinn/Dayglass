@@ -228,7 +228,7 @@ textarea::placeholder {
 
 .event-row {
   display: grid;
-  grid-template-columns: 10px minmax(0, 1fr);
+  grid-template-columns: 10px minmax(0, 1fr) auto;
   gap: 12px;
   align-items: stretch;
   min-height: 72px;
@@ -273,6 +273,23 @@ textarea::placeholder {
 
 .event-row p {
   font-size: 0.9rem;
+}
+
+.event-row__delete {
+  align-self: center;
+  min-height: 34px;
+  border: 1px solid #d9d3c8;
+  border-radius: 7px;
+  padding: 0 12px;
+  color: #7e3b39;
+  background: #fff8f6;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.event-row__delete:hover {
+  border-color: #ef6f6c;
+  color: #a13f3d;
 }
 
 .focus-view {
@@ -414,6 +431,15 @@ textarea::placeholder {
     align-items: flex-start;
     flex-direction: column;
     gap: 4px;
+  }
+
+  .event-row {
+    grid-template-columns: 10px minmax(0, 1fr);
+  }
+
+  .event-row__delete {
+    grid-column: 2;
+    justify-self: start;
   }
 
   .focus-view__hero {

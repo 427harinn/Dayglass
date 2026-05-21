@@ -5,6 +5,7 @@ import {
   getSessionDuration,
   getSessionTimeRangeError,
   minutesToDurationLabel,
+  sortEventsByStartTime,
 } from '../features/schedule/scheduleUtils';
 import type { DayglassSession } from '../features/schedule/scheduleTypes';
 import { EventForm } from './EventForm';
@@ -21,6 +22,14 @@ export function SetupView({ session, onSessionChange }: SetupViewProps) {
   const timelineSegments = buildTimelineSegments(session);
   const elapsedPercent = getElapsedPercent(session, demoNowTime);
   const duration = getSessionDuration(session);
+  const sortedEvents = sortEventsByStartTime(session.events);
+
+  const handleDeleteEvent = (eventId: string) => {
+    onSessionChange({
+      ...session,
+      events: session.events.filter((event) => event.id !== eventId),
+    });
+  };
 
   return (
     <main className="setup-view">
@@ -42,7 +51,7 @@ export function SetupView({ session, onSessionChange }: SetupViewProps) {
           <h2>イベント一覧</h2>
         </div>
         <Timeline segments={timelineSegments} elapsedPercent={elapsedPercent} />
-        <EventList events={session.events} />
+        <EventList events={sortedEvents} onDeleteEvent={handleDeleteEvent} />
       </section>
     </main>
   );

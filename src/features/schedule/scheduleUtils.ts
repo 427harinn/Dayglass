@@ -31,6 +31,9 @@ export const minutesToDurationLabel = (minutes: number) => {
   return `${hours}h ${remainingMinutes}m`;
 };
 
+export const sortEventsByStartTime = (events: DayglassEvent[]) =>
+  [...events].sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime));
+
 export const getSessionDuration = (session: DayglassSession) =>
   timeToMinutes(session.endTime) - timeToMinutes(session.startTime);
 
@@ -128,9 +131,7 @@ export const getNextEvent = (
 ) => {
   const now = timeToMinutes(nowTime);
 
-  return events
-    .filter((event) => timeToMinutes(event.startTime) >= now)
-    .sort((a, b) => timeToMinutes(a.startTime) - timeToMinutes(b.startTime))[0];
+  return sortEventsByStartTime(events).find((event) => timeToMinutes(event.startTime) >= now);
 };
 
 export const getCurrentEvent = (
@@ -139,7 +140,7 @@ export const getCurrentEvent = (
 ) => {
   const now = timeToMinutes(nowTime);
 
-  return events.find((event) => {
+  return sortEventsByStartTime(events).find((event) => {
     if (!event.endTime) {
       return false;
     }
@@ -161,7 +162,7 @@ export const buildTimelineSegments = (
     return [];
   }
 
-  return session.events
+  return sortEventsByStartTime(session.events)
     .filter((event) => event.endTime)
     .map((event) => {
       const eventStart = timeToMinutes(event.startTime);
@@ -186,7 +187,7 @@ export const buildHourglassSegments = (
 ): HourglassSegment[] => {
   const now = timeToMinutes(nowTime);
   const sessionEnd = timeToMinutes(session.endTime);
-  const remainingEvents = session.events.filter((event) => {
+  const remainingEvents = sortEventsByStartTime(session.events).filter((event) => {
     if (!event.endTime) {
       return false;
     }
