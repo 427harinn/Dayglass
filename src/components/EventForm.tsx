@@ -1,5 +1,5 @@
 import type { ChangeEvent, FormEvent } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { eventTypeLabels } from '../features/schedule/defaultSession';
 import {
   getEventTimeRangeError,
@@ -9,8 +9,10 @@ import type { DayglassEvent, DayglassSession, EventType } from '../features/sche
 
 type EventFormProps = {
   session: DayglassSession;
+  editingEvent?: DayglassEvent;
   timeRangeError?: string;
   onSessionChange: (session: DayglassSession) => void;
+  onEditComplete: () => void;
 };
 
 type EventDraft = {
@@ -37,9 +39,35 @@ const createEventId = () => {
   return `event-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 };
 
-export function EventForm({ session, timeRangeError, onSessionChange }: EventFormProps) {
+const eventToDraft = (event: DayglassEvent): EventDraft => ({
+  title: event.title,
+  type: event.type,
+  startTime: event.startTime,
+  endTime: event.endTime ?? '',
+  memo: event.memo ?? '',
+});
+
+export function EventForm({
+  session,
+  editingEvent,
+  timeRangeError,
+  onSessionChange,
+  onEditComplete,
+}: EventFormProps) {
   const [eventDraft, setEventDraft] = useState<EventDraft>(initialEventDraft);
   const [eventError, setEventError] = useState<string>();
+  const isEditing = Boolean(editingEvent);
+
+  useEffect(() => {
+    if (editingEvent) {
+      setEventDraft(eventToDraft(editingEvent));
+      setEventError(undefined);
+      return;
+    }
+
+    setEventDraft(initialEventDraft);
+    setEventError(undefined);
+  }, [editingEvent]);
 
   const updateSessionField =
     (field: keyof Pick<DayglassSession, 'title' | 'startTime' | 'endTime'>) =>
@@ -60,7 +88,13 @@ export function EventForm({ session, timeRangeError, onSessionChange }: EventFor
       setEventError(undefined);
     };
 
-  const handleAddEvent = (event: FormEvent<HTMLFormElement>) => {
+  const resetEventForm = () => {
+    setEventDraft(initialEventDraft);
+    setEventError(undefined);
+    onEditComplete();
+  };
+
+  const handleSubmitEvent = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const title = eventDraft.title.trim();
@@ -83,24 +117,28 @@ export function EventForm({ session, timeRangeError, onSessionChange }: EventFor
     }
 
     const nextEvent: DayglassEvent = {
-      id: createEventId(),
+      id: editingEvent?.id ?? createEventId(),
       title,
       type: eventDraft.type,
       startTime: eventDraft.startTime,
       endTime: eventDraft.endTime,
       memo: memo || undefined,
     };
+    const nextEvents = editingEvent
+      ? session.events.map((eventItem) =>
+          eventItem.id === editingEvent.id ? nextEvent : eventItem,
+        )
+      : [...session.events, nextEvent];
 
     onSessionChange({
       ...session,
-      events: sortEventsByStartTime([...session.events, nextEvent]),
+      events: sortEventsByStartTime(nextEvents),
     });
-    setEventDraft(initialEventDraft);
-    setEventError(undefined);
+    resetEventForm();
   };
 
   return (
-    <form className="form-shell" onSubmit={handleAddEvent}>
+    <form className="form-shell" onSubmit={handleSubmitEvent}>
       <div className="form-grid">
         <label>
           セッション名
@@ -121,6 +159,10 @@ export function EventForm({ session, timeRangeError, onSessionChange }: EventFor
       </div>
 
       {timeRangeError ? <p className="form-error">{timeRangeError}</p> : null}
+
+      <div className="event-form-heading">
+        <span>{isEditing ? 'イベント編集' : 'イベント追加'}</span>
+      </div>
 
       <div className="event-draft">
         <label>
@@ -170,9 +212,16 @@ export function EventForm({ session, timeRangeError, onSessionChange }: EventFor
 
       {eventError ? <p className="form-error">{eventError}</p> : null}
 
-      <button className="secondary-button" type="submit">
-        イベントを追加
-      </button>
+      <div className="form-actions">
+        <button className="secondary-button" type="submit">
+          {isEditing ? 'イベントを更新' : 'イベントを追加'}
+        </button>
+        {isEditing ? (
+          <button className="ghost-button" type="button" onClick={resetEventForm}>
+            編集をキャンセル
+          </button>
+        ) : null}
+      </div>
     </form>
   );
 }
