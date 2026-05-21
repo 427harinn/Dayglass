@@ -152,6 +152,17 @@ input::placeholder {
   color: #9aa3ad;
 }
 
+.form-error {
+  margin: -6px 0 0;
+  border-left: 3px solid #ef6f6c;
+  padding: 8px 10px;
+  color: #a13f3d;
+  background: #fff3f1;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .secondary-button {
   width: fit-content;
   min-height: 42px;
