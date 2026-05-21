@@ -34,6 +34,17 @@ export const minutesToDurationLabel = (minutes: number) => {
 export const getSessionDuration = (session: DayglassSession) =>
   timeToMinutes(session.endTime) - timeToMinutes(session.startTime);
 
+export const isSessionTimeRangeValid = (session: DayglassSession) =>
+  getSessionDuration(session) > 0;
+
+export const getSessionTimeRangeError = (session: DayglassSession) => {
+  if (isSessionTimeRangeValid(session)) {
+    return undefined;
+  }
+
+  return '終了時刻は開始時刻より後にしてください。';
+};
+
 export const getSessionStatus = (
   session: DayglassSession,
   nowTime: string,
@@ -56,14 +67,23 @@ export const getSessionStatus = (
 export const getRemainingMinutes = (
   session: DayglassSession,
   nowTime: string,
-) => clamp(timeToMinutes(session.endTime) - timeToMinutes(nowTime), 0, getSessionDuration(session));
+) => {
+  const duration = Math.max(0, getSessionDuration(session));
+  return clamp(timeToMinutes(session.endTime) - timeToMinutes(nowTime), 0, duration);
+};
 
 export const getElapsedPercent = (
   session: DayglassSession,
   nowTime: string,
 ) => {
+  const duration = getSessionDuration(session);
+
+  if (duration <= 0) {
+    return 0;
+  }
+
   const elapsed = timeToMinutes(nowTime) - timeToMinutes(session.startTime);
-  return clamp((elapsed / getSessionDuration(session)) * 100, 0, 100);
+  return clamp((elapsed / duration) * 100, 0, 100);
 };
 
 export const getNextEvent = (
@@ -100,6 +120,10 @@ export const buildTimelineSegments = (
 ): TimelineSegment[] => {
   const sessionStart = timeToMinutes(session.startTime);
   const duration = getSessionDuration(session);
+
+  if (duration <= 0) {
+    return [];
+  }
 
   return session.events
     .filter((event) => event.endTime)

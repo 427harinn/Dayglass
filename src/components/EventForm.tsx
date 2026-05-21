@@ -1,17 +1,29 @@
+import type { ChangeEvent } from 'react';
 import { eventTypeLabels } from '../features/schedule/defaultSession';
 import type { DayglassSession } from '../features/schedule/scheduleTypes';
 
 type EventFormProps = {
   session: DayglassSession;
+  timeRangeError?: string;
+  onSessionChange: (session: DayglassSession) => void;
 };
 
-export function EventForm({ session }: EventFormProps) {
+export function EventForm({ session, timeRangeError, onSessionChange }: EventFormProps) {
+  const updateSessionField =
+    (field: keyof Pick<DayglassSession, 'title' | 'startTime' | 'endTime'>) =>
+    (event: ChangeEvent<HTMLInputElement>) => {
+      onSessionChange({
+        ...session,
+        [field]: event.target.value,
+      });
+    };
+
   return (
     <form className="form-shell">
       <div className="form-grid">
         <label>
           セッション名
-          <input value={session.title} readOnly />
+          <input value={session.title} onChange={updateSessionField('title')} />
         </label>
         <label>
           日付
@@ -19,13 +31,15 @@ export function EventForm({ session }: EventFormProps) {
         </label>
         <label>
           開始
-          <input value={session.startTime} readOnly />
+          <input type="time" value={session.startTime} onChange={updateSessionField('startTime')} />
         </label>
         <label>
           終了
-          <input value={session.endTime} readOnly />
+          <input type="time" value={session.endTime} onChange={updateSessionField('endTime')} />
         </label>
       </div>
+
+      {timeRangeError ? <p className="form-error">{timeRangeError}</p> : null}
 
       <div className="event-draft">
         <label>
