@@ -1,7 +1,10 @@
 import type { ChangeEvent, FormEvent } from 'react';
 import { useState } from 'react';
 import { eventTypeLabels } from '../features/schedule/defaultSession';
-import { getEventTimeRangeError } from '../features/schedule/scheduleUtils';
+import {
+  getEventTimeRangeError,
+  sortEventsByStartTime,
+} from '../features/schedule/scheduleUtils';
 import type { DayglassEvent, DayglassSession, EventType } from '../features/schedule/scheduleTypes';
 
 type EventFormProps = {
@@ -90,7 +93,7 @@ export function EventForm({ session, timeRangeError, onSessionChange }: EventFor
 
     onSessionChange({
       ...session,
-      events: [...session.events, nextEvent],
+      events: sortEventsByStartTime([...session.events, nextEvent]),
     });
     setEventDraft(initialEventDraft);
     setEventError(undefined);
