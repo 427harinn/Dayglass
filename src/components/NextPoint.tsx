@@ -11,19 +11,19 @@ export function NextPoint({ nextEvent, nowTime, sessionEndTime }: NextPointProps
   if (!nextEvent) {
     return (
       <section className="next-point">
-        <span>Next point</span>
-        <strong>Session ends at {sessionEndTime}</strong>
-        <p>{minutesToDurationLabel(timeToMinutes(sessionEndTime) - timeToMinutes(nowTime))} remaining</p>
+        <span>次のポイント</span>
+        <strong>セッション終了 {sessionEndTime}</strong>
+        <p>残り {minutesToDurationLabel(timeToMinutes(sessionEndTime) - timeToMinutes(nowTime))}</p>
       </section>
     );
   }
 
   return (
     <section className="next-point">
-      <span>Next point</span>
+      <span>次のポイント</span>
       <strong>{nextEvent.title}</strong>
       <p>
-        Starts at {nextEvent.startTime} /{' '}
+        {nextEvent.startTime} 開始 / あと{' '}
         {minutesToDurationLabel(timeToMinutes(nextEvent.startTime) - timeToMinutes(nowTime))}
       </p>
     </section>

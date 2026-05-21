@@ -19,7 +19,7 @@ export function EventList({ events }: EventListProps) {
           <div className="event-row__body">
             <div className="event-row__main">
               <strong>{event.title}</strong>
-              <span>{event.startTime} - {event.endTime ?? 'Open'}</span>
+              <span>{event.startTime} - {event.endTime ?? '未設定'}</span>
             </div>
             <p>{eventTypeLabels[event.type]}{event.memo ? ` / ${event.memo}` : ''}</p>
           </div>

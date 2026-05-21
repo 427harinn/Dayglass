@@ -10,30 +10,30 @@ export function EventForm({ session }: EventFormProps) {
     <form className="form-shell">
       <div className="form-grid">
         <label>
-          Session title
+          セッション名
           <input value={session.title} readOnly />
         </label>
         <label>
-          Date
+          日付
           <input value={session.date} readOnly />
         </label>
         <label>
-          Start
+          開始
           <input value={session.startTime} readOnly />
         </label>
         <label>
-          End
+          終了
           <input value={session.endTime} readOnly />
         </label>
       </div>
 
       <div className="event-draft">
         <label>
-          Event title
-          <input placeholder="New event" readOnly />
+          イベント名
+          <input placeholder="新しいイベント" readOnly />
         </label>
         <label>
-          Type
+          種別
           <select value="work" disabled>
             {Object.entries(eventTypeLabels).map(([value, label]) => (
               <option key={value} value={value}>
@@ -43,17 +43,17 @@ export function EventForm({ session }: EventFormProps) {
           </select>
         </label>
         <label>
-          Start
+          開始
           <input placeholder="14:00" readOnly />
         </label>
         <label>
-          End
+          終了
           <input placeholder="15:00" readOnly />
         </label>
       </div>
 
       <button className="secondary-button" type="button">
-        Add event
+        イベントを追加
       </button>
     </form>
   );
