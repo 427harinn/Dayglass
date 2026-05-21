@@ -1,6 +1,8 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
+import { useState } from 'react';
 import { eventTypeLabels } from '../features/schedule/defaultSession';
-import type { DayglassSession } from '../features/schedule/scheduleTypes';
+import { getEventTimeRangeError } from '../features/schedule/scheduleUtils';
+import type { DayglassEvent, DayglassSession, EventType } from '../features/schedule/scheduleTypes';
 
 type EventFormProps = {
   session: DayglassSession;
@@ -8,7 +10,34 @@ type EventFormProps = {
   onSessionChange: (session: DayglassSession) => void;
 };
 
+type EventDraft = {
+  title: string;
+  type: EventType;
+  startTime: string;
+  endTime: string;
+  memo: string;
+};
+
+const initialEventDraft: EventDraft = {
+  title: '',
+  type: 'work',
+  startTime: '',
+  endTime: '',
+  memo: '',
+};
+
+const createEventId = () => {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return crypto.randomUUID();
+  }
+
+  return `event-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+};
+
 export function EventForm({ session, timeRangeError, onSessionChange }: EventFormProps) {
+  const [eventDraft, setEventDraft] = useState<EventDraft>(initialEventDraft);
+  const [eventError, setEventError] = useState<string>();
+
   const updateSessionField =
     (field: keyof Pick<DayglassSession, 'title' | 'startTime' | 'endTime'>) =>
     (event: ChangeEvent<HTMLInputElement>) => {
@@ -18,8 +47,57 @@ export function EventForm({ session, timeRangeError, onSessionChange }: EventFor
       });
     };
 
+  const updateEventField =
+    (field: keyof EventDraft) =>
+    (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+      setEventDraft((currentDraft) => ({
+        ...currentDraft,
+        [field]: event.target.value,
+      }));
+      setEventError(undefined);
+    };
+
+  const handleAddEvent = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const title = eventDraft.title.trim();
+    const memo = eventDraft.memo.trim();
+
+    if (!title || !eventDraft.startTime || !eventDraft.endTime) {
+      setEventError('イベント名、開始時刻、終了時刻を入力してください。');
+      return;
+    }
+
+    const timeRangeValidation = getEventTimeRangeError(
+      session,
+      eventDraft.startTime,
+      eventDraft.endTime,
+    );
+
+    if (timeRangeValidation) {
+      setEventError(timeRangeValidation);
+      return;
+    }
+
+    const nextEvent: DayglassEvent = {
+      id: createEventId(),
+      title,
+      type: eventDraft.type,
+      startTime: eventDraft.startTime,
+      endTime: eventDraft.endTime,
+      memo: memo || undefined,
+    };
+
+    onSessionChange({
+      ...session,
+      events: [...session.events, nextEvent],
+    });
+    setEventDraft(initialEventDraft);
+    setEventError(undefined);
+  };
+
   return (
-    <form className="form-shell">
+    <form className="form-shell" onSubmit={handleAddEvent}>
       <div className="form-grid">
         <label>
           セッション名
@@ -44,11 +122,15 @@ export function EventForm({ session, timeRangeError, onSessionChange }: EventFor
       <div className="event-draft">
         <label>
           イベント名
-          <input placeholder="新しいイベント" readOnly />
+          <input
+            value={eventDraft.title}
+            placeholder="新しいイベント"
+            onChange={updateEventField('title')}
+          />
         </label>
         <label>
           種別
-          <select value="work" disabled>
+          <select value={eventDraft.type} onChange={updateEventField('type')}>
             {Object.entries(eventTypeLabels).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
@@ -58,15 +140,34 @@ export function EventForm({ session, timeRangeError, onSessionChange }: EventFor
         </label>
         <label>
           開始
-          <input placeholder="14:00" readOnly />
+          <input
+            type="time"
+            value={eventDraft.startTime}
+            onChange={updateEventField('startTime')}
+          />
         </label>
         <label>
           終了
-          <input placeholder="15:00" readOnly />
+          <input
+            type="time"
+            value={eventDraft.endTime}
+            onChange={updateEventField('endTime')}
+          />
+        </label>
+        <label className="event-draft__memo">
+          メモ
+          <textarea
+            value={eventDraft.memo}
+            placeholder="必要ならメモを残す"
+            rows={3}
+            onChange={updateEventField('memo')}
+          />
         </label>
       </div>
 
-      <button className="secondary-button" type="button">
+      {eventError ? <p className="form-error">{eventError}</p> : null}
+
+      <button className="secondary-button" type="submit">
         イベントを追加
       </button>
     </form>
