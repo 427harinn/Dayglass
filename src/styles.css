@@ -57,6 +57,7 @@ button {
 }
 
 .app-header__eyebrow,
+.event-form-heading span,
 .section-heading span,
 .focus-view__status span,
 .focus-view__time span,
@@ -121,6 +122,10 @@ button {
 .form-shell {
   display: grid;
   gap: 20px;
+}
+
+.event-form-heading {
+  margin-bottom: -10px;
 }
 
 .form-grid,
@@ -238,6 +243,11 @@ textarea::placeholder {
   background: #fbfaf6;
 }
 
+.event-row.is-editing {
+  border-color: #5b7cfa;
+  background: #f7f9ff;
+}
+
 .event-row__color {
   width: 10px;
   border-radius: 999px;
@@ -275,7 +285,14 @@ textarea::placeholder {
   font-size: 0.9rem;
 }
 
-.event-row__delete {
+.event-row__actions {
+  display: flex;
+  align-self: center;
+  gap: 8px;
+}
+
+.event-row__delete,
+.event-row__edit {
   align-self: center;
   min-height: 34px;
   border: 1px solid #d9d3c8;
@@ -285,6 +302,33 @@ textarea::placeholder {
   background: #fff8f6;
   font-size: 0.85rem;
   font-weight: 800;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ghost-button {
+  width: fit-content;
+  min-height: 42px;
+  border: 1px solid #d9d3c8;
+  border-radius: 7px;
+  padding: 0 16px;
+  color: #596370;
+  background: #fbfaf6;
+  font-weight: 800;
+}
+
+.event-row__edit {
+  color: #334f9f;
+  background: #f5f7ff;
+}
+
+.event-row__edit:hover {
+  border-color: #5b7cfa;
+  color: #203a92;
 }
 
 .event-row__delete:hover {
@@ -437,7 +481,7 @@ textarea::placeholder {
     grid-template-columns: 10px minmax(0, 1fr);
   }
 
-  .event-row__delete {
+  .event-row__actions {
     grid-column: 2;
     justify-self: start;
   }

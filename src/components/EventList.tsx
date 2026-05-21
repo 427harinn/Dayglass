@@ -4,14 +4,24 @@ import type { DayglassEvent } from '../features/schedule/scheduleTypes';
 
 type EventListProps = {
   events: DayglassEvent[];
+  editingEventId?: string;
+  onEditEvent: (event: DayglassEvent) => void;
   onDeleteEvent: (eventId: string) => void;
 };
 
-export function EventList({ events, onDeleteEvent }: EventListProps) {
+export function EventList({
+  events,
+  editingEventId,
+  onEditEvent,
+  onDeleteEvent,
+}: EventListProps) {
   return (
     <div className="event-list">
       {events.map((event) => (
-        <article className="event-row" key={event.id}>
+        <article
+          className={event.id === editingEventId ? 'event-row is-editing' : 'event-row'}
+          key={event.id}
+        >
           <span
             className="event-row__color"
             style={{ backgroundColor: getEventColor(event) }}
@@ -24,14 +34,24 @@ export function EventList({ events, onDeleteEvent }: EventListProps) {
             </div>
             <p>{eventTypeLabels[event.type]}{event.memo ? ` / ${event.memo}` : ''}</p>
           </div>
-          <button
-            className="event-row__delete"
-            type="button"
-            aria-label={`${event.title}を削除`}
-            onClick={() => onDeleteEvent(event.id)}
-          >
-            削除
-          </button>
+          <div className="event-row__actions">
+            <button
+              className="event-row__edit"
+              type="button"
+              aria-label={`${event.title}を編集`}
+              onClick={() => onEditEvent(event)}
+            >
+              編集
+            </button>
+            <button
+              className="event-row__delete"
+              type="button"
+              aria-label={`${event.title}を削除`}
+              onClick={() => onDeleteEvent(event.id)}
+            >
+              削除
+            </button>
+          </div>
         </article>
       ))}
     </div>

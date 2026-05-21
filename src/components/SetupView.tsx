@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { demoNowTime } from '../features/schedule/defaultSession';
 import {
   buildTimelineSegments,
@@ -7,7 +8,7 @@ import {
   minutesToDurationLabel,
   sortEventsByStartTime,
 } from '../features/schedule/scheduleUtils';
-import type { DayglassSession } from '../features/schedule/scheduleTypes';
+import type { DayglassEvent, DayglassSession } from '../features/schedule/scheduleTypes';
 import { EventForm } from './EventForm';
 import { EventList } from './EventList';
 import { Timeline } from './Timeline';
@@ -18,6 +19,7 @@ type SetupViewProps = {
 };
 
 export function SetupView({ session, onSessionChange }: SetupViewProps) {
+  const [editingEvent, setEditingEvent] = useState<DayglassEvent>();
   const timeRangeError = getSessionTimeRangeError(session);
   const timelineSegments = buildTimelineSegments(session);
   const elapsedPercent = getElapsedPercent(session, demoNowTime);
@@ -29,6 +31,10 @@ export function SetupView({ session, onSessionChange }: SetupViewProps) {
       ...session,
       events: session.events.filter((event) => event.id !== eventId),
     });
+
+    if (editingEvent?.id === eventId) {
+      setEditingEvent(undefined);
+    }
   };
 
   return (
@@ -40,8 +46,10 @@ export function SetupView({ session, onSessionChange }: SetupViewProps) {
         </div>
         <EventForm
           session={session}
+          editingEvent={editingEvent}
           timeRangeError={timeRangeError}
           onSessionChange={onSessionChange}
+          onEditComplete={() => setEditingEvent(undefined)}
         />
       </section>
 
@@ -51,7 +59,12 @@ export function SetupView({ session, onSessionChange }: SetupViewProps) {
           <h2>イベント一覧</h2>
         </div>
         <Timeline segments={timelineSegments} elapsedPercent={elapsedPercent} />
-        <EventList events={sortedEvents} onDeleteEvent={handleDeleteEvent} />
+        <EventList
+          events={sortedEvents}
+          editingEventId={editingEvent?.id}
+          onEditEvent={setEditingEvent}
+          onDeleteEvent={handleDeleteEvent}
+        />
       </section>
     </main>
   );
