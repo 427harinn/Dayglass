@@ -16,6 +16,12 @@ type FocusViewProps = {
   session: DayglassSession;
 };
 
+const statusLabels = {
+  beforeStart: '開始前',
+  active: '進行中',
+  finished: '終了',
+};
+
 export function FocusView({ session }: FocusViewProps) {
   const remainingMinutes = getRemainingMinutes(session, demoNowTime);
   const status = getSessionStatus(session, demoNowTime);
@@ -28,24 +34,24 @@ export function FocusView({ session }: FocusViewProps) {
     <main className="focus-view">
       <section className="focus-view__hero">
         <div className="focus-view__status">
-          <span>{status}</span>
+          <span>{statusLabels[status]}</span>
           <strong>{session.title}</strong>
         </div>
 
         <Hourglass segments={hourglassSegments} progressPercent={progressPercent} />
 
         <div className="focus-view__time">
-          <span>Remaining</span>
+          <span>残り時間</span>
           <strong>{minutesToDurationLabel(remainingMinutes)}</strong>
-          <p>Demo time {demoNowTime}</p>
+          <p>デモ時刻 {demoNowTime}</p>
         </div>
       </section>
 
       <div className="focus-view__footer">
         <section className="current-block">
-          <span>Now</span>
-          <strong>{currentEvent?.title ?? 'Between events'}</strong>
-          <p>{currentEvent ? `${currentEvent.startTime} - ${currentEvent.endTime}` : 'Keep the session moving.'}</p>
+          <span>現在</span>
+          <strong>{currentEvent?.title ?? '予定の合間'}</strong>
+          <p>{currentEvent ? `${currentEvent.startTime} - ${currentEvent.endTime}` : 'セッションを続けています。'}</p>
         </section>
         <NextPoint nextEvent={nextEvent} nowTime={demoNowTime} sessionEndTime={session.endTime} />
       </div>
