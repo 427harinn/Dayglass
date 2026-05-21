@@ -45,6 +45,42 @@ export const getSessionTimeRangeError = (session: DayglassSession) => {
   return '終了時刻は開始時刻より後にしてください。';
 };
 
+export const isTimeRangeValid = (startTime: string, endTime: string) =>
+  timeToMinutes(endTime) > timeToMinutes(startTime);
+
+export const isTimeRangeWithinSession = (
+  session: DayglassSession,
+  startTime: string,
+  endTime: string,
+) => {
+  const sessionStart = timeToMinutes(session.startTime);
+  const sessionEnd = timeToMinutes(session.endTime);
+  const start = timeToMinutes(startTime);
+  const end = timeToMinutes(endTime);
+
+  return start >= sessionStart && end <= sessionEnd;
+};
+
+export const getEventTimeRangeError = (
+  session: DayglassSession,
+  startTime: string,
+  endTime: string,
+) => {
+  if (!isTimeRangeValid(startTime, endTime)) {
+    return 'イベントの終了時刻は開始時刻より後にしてください。';
+  }
+
+  if (!isSessionTimeRangeValid(session)) {
+    return '先にセッションの時間範囲を確認してください。';
+  }
+
+  if (!isTimeRangeWithinSession(session, startTime, endTime)) {
+    return 'イベントはセッションの時間範囲内にしてください。';
+  }
+
+  return undefined;
+};
+
 export const getSessionStatus = (
   session: DayglassSession,
   nowTime: string,

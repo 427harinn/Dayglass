@@ -21,6 +21,7 @@ body {
 
 button,
 input,
+textarea,
 select {
   font: inherit;
 }
@@ -138,9 +139,9 @@ label {
 }
 
 input,
+textarea,
 select {
   width: 100%;
-  min-height: 42px;
   border: 1px solid #d9d3c8;
   border-radius: 7px;
   padding: 0 12px;
@@ -148,8 +149,24 @@ select {
   background: #fbfaf6;
 }
 
-input::placeholder {
+input,
+select {
+  min-height: 42px;
+}
+
+textarea {
+  min-height: 80px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
   color: #9aa3ad;
+}
+
+.event-draft__memo {
+  grid-column: 1 / -1;
 }
 
 .form-error {
