@@ -5,6 +5,8 @@ import { SetupView } from './components/SetupView';
 import { loadSession, saveSession } from './features/schedule/storage';
 import type { AppMode } from './features/schedule/scheduleTypes';
 
+const CURRENT_TIME_REFRESH_MS = 60 * 1000;
+
 const formatCurrentTime = (date: Date) => {
   const hours = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
@@ -23,7 +25,7 @@ export default function App() {
   useEffect(() => {
     const timerId = window.setInterval(() => {
       setCurrentTime(formatCurrentTime(new Date()));
-    }, 1000);
+    }, CURRENT_TIME_REFRESH_MS);
 
     return () => {
       window.clearInterval(timerId);
