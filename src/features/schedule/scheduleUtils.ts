@@ -3,6 +3,8 @@ import type {
   DayglassEvent,
   DayglassSession,
   HourglassSegment,
+  ReminderId,
+  ReminderNotice,
   SessionStatus,
   TimelineSegment,
 } from './scheduleTypes';
@@ -212,4 +214,64 @@ export const buildHourglassSegments = (
       percent,
     };
   });
+};
+
+const toTimeLabel = (timeInMinutes: number) => {
+  const hours = Math.floor(timeInMinutes / 60)
+    .toString()
+    .padStart(2, '0');
+  const minutes = (timeInMinutes % 60).toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+};
+
+export const getInAppReminderNotices = (
+  session: DayglassSession,
+  currentTime: string,
+  displayedReminderIds: Set<ReminderId>,
+): ReminderNotice[] => {
+  const now = timeToMinutes(currentTime);
+  const reminders: ReminderNotice[] = [];
+  const sessionEnd = timeToMinutes(session.endTime);
+  const sessionReminderTrigger = sessionEnd - 20;
+  const sessionReminderId: ReminderId = `sessionEndSoon:${session.id}`;
+
+  if (
+    sessionReminderTrigger >= timeToMinutes(session.startTime) &&
+    now >= sessionReminderTrigger &&
+    now < sessionEnd &&
+    !displayedReminderIds.has(sessionReminderId)
+  ) {
+    reminders.push({
+      id: sessionReminderId,
+      type: 'sessionEndSoon',
+      title: 'セッション終了が近づいています',
+      message: `${session.endTime} の20分前です。`,
+      triggerAt: toTimeLabel(sessionReminderTrigger),
+      targetTime: session.endTime,
+    });
+  }
+
+  sortEventsByStartTime(session.events).forEach((event) => {
+    const eventStart = timeToMinutes(event.startTime);
+    const triggerTime = eventStart - 10;
+    const reminderId: ReminderId = `eventStartSoon:${event.id}`;
+
+    if (
+      triggerTime >= timeToMinutes(session.startTime) &&
+      now >= triggerTime &&
+      now < eventStart &&
+      !displayedReminderIds.has(reminderId)
+    ) {
+      reminders.push({
+        id: reminderId,
+        type: 'eventStartSoon',
+        title: 'イベント開始が近づいています',
+        message: `${event.startTime} から「${event.title}」が始まります。`,
+        triggerAt: toTimeLabel(triggerTime),
+        targetTime: event.startTime,
+      });
+    }
+  });
+
+  return reminders;
 };

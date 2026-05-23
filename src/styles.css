@@ -626,3 +626,45 @@ textarea::placeholder {
     grid-column: 2;
   }
 }
+
+.focus-reminders {
+  position: fixed;
+  top: 88px;
+  right: 20px;
+  z-index: 20;
+  display: grid;
+  gap: 8px;
+  width: min(320px, calc(100vw - 40px));
+}
+
+.focus-reminder-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid #ddd6ca;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: rgb(255 253 248 / 0.95);
+  box-shadow: 0 12px 32px rgb(32 37 43 / 0.1);
+}
+
+.focus-reminder-card p {
+  margin: 0 0 2px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.focus-reminder-card small {
+  color: #69737f;
+  font-size: 0.78rem;
+}
+
+.focus-reminder-card button {
+  border: 0;
+  padding: 0;
+  color: #69737f;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 700;
+}

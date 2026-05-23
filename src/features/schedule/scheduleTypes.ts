@@ -46,3 +46,16 @@ export type HourglassSegment = {
   color: string;
   percent: number;
 };
+
+export type ReminderType = 'sessionEndSoon' | 'eventStartSoon';
+
+export type ReminderId = `${ReminderType}:${string}`;
+
+export type ReminderNotice = {
+  id: ReminderId;
+  type: ReminderType;
+  title: string;
+  message: string;
+  triggerAt: string;
+  targetTime: string;
+};
