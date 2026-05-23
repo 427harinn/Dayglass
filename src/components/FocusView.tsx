@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
+  loadDismissedReminderIds,
+  saveDismissedReminderIds,
+} from '../features/schedule/reminderStorage';
+import {
   getCurrentEvent,
   getElapsedPercent,
   getInAppReminderNotices,
@@ -27,6 +31,9 @@ const statusLabels = {
 export function FocusView({ session, currentTime }: FocusViewProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [displayedReminderIds, setDisplayedReminderIds] = useState<Set<ReminderId>>(new Set());
+  const [dismissedReminderIds, setDismissedReminderIds] = useState<Set<ReminderId>>(
+    () => loadDismissedReminderIds(),
+  );
   const [activeReminders, setActiveReminders] = useState<ReminderNotice[]>([]);
   const remainingMinutes = getRemainingMinutes(session, currentTime);
   const status = getSessionStatus(session, currentTime);
@@ -45,7 +52,12 @@ export function FocusView({ session, currentTime }: FocusViewProps) {
     : `${session.endTime} セッション終了`;
 
   useEffect(() => {
-    const nextReminders = getInAppReminderNotices(session, currentTime, displayedReminderIds);
+    const nextReminders = getInAppReminderNotices(
+      session,
+      currentTime,
+      displayedReminderIds,
+      dismissedReminderIds,
+    );
 
     if (nextReminders.length === 0) {
       return;
@@ -57,10 +69,16 @@ export function FocusView({ session, currentTime }: FocusViewProps) {
       return next;
     });
     setActiveReminders((current) => [...current, ...nextReminders]);
-  }, [currentTime, displayedReminderIds, session]);
+  }, [currentTime, dismissedReminderIds, displayedReminderIds, session]);
 
   const dismissReminder = (reminderId: ReminderId) => {
     setActiveReminders((current) => current.filter((reminder) => reminder.id !== reminderId));
+    setDismissedReminderIds((current) => {
+      const next = new Set(current);
+      next.add(reminderId);
+      saveDismissedReminderIds(next);
+      return next;
+    });
   };
 
   return (

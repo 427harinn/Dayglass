@@ -228,6 +228,7 @@ export const getInAppReminderNotices = (
   session: DayglassSession,
   currentTime: string,
   displayedReminderIds: Set<ReminderId>,
+  dismissedReminderIds: Set<ReminderId>,
 ): ReminderNotice[] => {
   const now = timeToMinutes(currentTime);
   const reminders: ReminderNotice[] = [];
@@ -239,7 +240,8 @@ export const getInAppReminderNotices = (
     sessionReminderTrigger >= timeToMinutes(session.startTime) &&
     now >= sessionReminderTrigger &&
     now < sessionEnd &&
-    !displayedReminderIds.has(sessionReminderId)
+    !displayedReminderIds.has(sessionReminderId) &&
+    !dismissedReminderIds.has(sessionReminderId)
   ) {
     reminders.push({
       id: sessionReminderId,
@@ -254,13 +256,14 @@ export const getInAppReminderNotices = (
   sortEventsByStartTime(session.events).forEach((event) => {
     const eventStart = timeToMinutes(event.startTime);
     const triggerTime = eventStart - 10;
-    const reminderId: ReminderId = `eventStartSoon:${event.id}`;
+    const reminderId: ReminderId = `eventStartSoon:${session.id}:${event.id}`;
 
     if (
       triggerTime >= timeToMinutes(session.startTime) &&
       now >= triggerTime &&
       now < eventStart &&
-      !displayedReminderIds.has(reminderId)
+      !displayedReminderIds.has(reminderId) &&
+      !dismissedReminderIds.has(reminderId)
     ) {
       reminders.push({
         id: reminderId,
