@@ -1,11 +1,12 @@
 import type { HourglassSegment } from '../features/schedule/scheduleTypes';
 
 type HourglassProps = {
-  segments: HourglassSegment[];
+  segments?: HourglassSegment[];
   progressPercent: number;
+  showSegments?: boolean;
 };
 
-export function Hourglass({ segments, progressPercent }: HourglassProps) {
+export function Hourglass({ segments = [], progressPercent, showSegments = false }: HourglassProps) {
   const topHeight = Math.max(4, 88 - progressPercent * 0.72);
   const bottomHeight = Math.min(82, progressPercent * 0.72);
 
@@ -25,18 +26,20 @@ export function Hourglass({ segments, progressPercent }: HourglassProps) {
         <line className="hourglass__stream" x1="90" y1="126" x2="90" y2="171" />
       </svg>
 
-      <div className="hourglass__segments" aria-label="Remaining event color segments">
-        {segments.map((segment) => (
-          <span
-            key={segment.id}
-            style={{
-              backgroundColor: segment.color,
-              flexGrow: Math.max(segment.percent, 1),
-            }}
-            title={`${segment.label}: ${Math.round(segment.percent)}%`}
-          />
-        ))}
-      </div>
+      {showSegments ? (
+        <div className="hourglass__segments" aria-label="Remaining event color segments">
+          {segments.map((segment) => (
+            <span
+              key={segment.id}
+              style={{
+                backgroundColor: segment.color,
+                flexGrow: Math.max(segment.percent, 1),
+              }}
+              title={`${segment.label}: ${Math.round(segment.percent)}%`}
+            />
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

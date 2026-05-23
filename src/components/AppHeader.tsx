@@ -7,7 +7,7 @@ type AppHeaderProps = {
 
 export function AppHeader({ mode, onModeChange }: AppHeaderProps) {
   return (
-    <header className="app-header">
+    <header className={mode === 'focus' ? 'app-header app-header--focus' : 'app-header'}>
       <div>
         <p className="app-header__eyebrow">スケジュールタイマー</p>
         <h1>Dayglass</h1>

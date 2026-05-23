@@ -45,6 +45,10 @@ button {
   padding: 16px 0 28px;
 }
 
+.app-header--focus {
+  padding-bottom: 14px;
+}
+
 .app-header h1,
 .section-heading h2 {
   margin: 0;
@@ -56,11 +60,18 @@ button {
   letter-spacing: 0;
 }
 
+.app-header--focus h1 {
+  font-size: clamp(1.35rem, 3vw, 2.2rem);
+}
+
 .app-header__eyebrow,
 .event-form-heading span,
 .section-heading span,
 .focus-view__status span,
 .focus-view__time span,
+.focus-view__next-point span,
+.focus-details__header span,
+.focus-details__timeline > span,
 .current-block span,
 .next-point span {
   display: block;
@@ -344,10 +355,11 @@ textarea::placeholder {
 
 .focus-view__hero {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) minmax(240px, 360px) minmax(180px, 1fr);
-  gap: 30px;
+  grid-template-columns: minmax(170px, 0.8fr) minmax(320px, 1.25fr) minmax(190px, 0.8fr);
+  gap: 34px;
   align-items: center;
-  padding: 42px 34px;
+  min-height: calc(100vh - 220px);
+  padding: 30px 34px 38px;
   border: 1px solid #ddd6ca;
   border-radius: 8px;
   background:
@@ -357,20 +369,61 @@ textarea::placeholder {
 }
 
 .focus-view__status strong,
-.focus-view__time strong {
+.focus-view__time strong,
+.focus-view__next-point strong {
   display: block;
   max-width: 14ch;
-  font-size: clamp(1.8rem, 6vw, 4.75rem);
-  line-height: 0.95;
   letter-spacing: 0;
 }
 
-.focus-view__time {
-  text-align: right;
+.focus-view__time strong {
+  font-size: clamp(1.8rem, 6vw, 4.75rem);
+  line-height: 0.95;
 }
 
-.focus-view__time strong {
-  margin-left: auto;
+.focus-view__status,
+.focus-view__next-point {
+  margin: 0;
+}
+
+.focus-view__status {
+  color: #596370;
+}
+
+.focus-view__status strong {
+  font-size: 1rem;
+}
+
+.focus-view__next-point strong {
+  overflow: hidden;
+  font-size: clamp(1rem, 2vw, 1.35rem);
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.focus-view__summary {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+}
+
+.focus-view__demo-time {
+  justify-self: end;
+  margin: 0 0 10px;
+  color: #8a939e;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.focus-view__details-button {
+  min-height: 42px;
+  border: 1px solid #20252b;
+  border-radius: 7px;
+  padding: 0 18px;
+  color: #fffdf8;
+  background: #20252b;
+  font-weight: 800;
 }
 
 .hourglass {
@@ -380,7 +433,7 @@ textarea::placeholder {
 }
 
 .hourglass svg {
-  width: min(100%, 320px);
+  width: min(100%, 430px);
   height: auto;
   filter: drop-shadow(0 20px 26px rgb(32 37 43 / 0.12));
 }
@@ -419,10 +472,62 @@ textarea::placeholder {
   min-width: 3px;
 }
 
-.focus-view__footer {
+.focus-details {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid #ddd6ca;
+  border-radius: 8px;
+  background: #fffdf8;
+}
+
+.focus-details__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.focus-details__header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.focus-details__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
+}
+
+.focus-details__timeline {
+  display: grid;
+  gap: 10px;
+}
+
+.focus-details__timeline ol {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.focus-details__timeline li {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #e6dfd2;
+  border-radius: 8px;
+  background: #fbfaf6;
+}
+
+.focus-details__timeline time,
+.focus-details__timeline small {
+  color: #69737f;
+  font-weight: 700;
 }
 
 .current-block,
@@ -458,7 +563,7 @@ textarea::placeholder {
   }
 
   .setup-view,
-  .focus-view__footer {
+  .focus-details__grid {
     grid-template-columns: 1fr;
   }
 
@@ -493,16 +598,31 @@ textarea::placeholder {
     text-align: center;
   }
 
-  .focus-view__status strong,
   .focus-view__time strong {
     max-width: none;
   }
 
-  .focus-view__time {
-    text-align: center;
+  .focus-view__summary {
+    justify-items: center;
   }
 
-  .focus-view__time strong {
-    margin: 0;
+  .focus-view__next-point {
+    width: 100%;
+  }
+
+  .focus-view__next-point strong {
+    max-width: 100%;
+  }
+
+  .focus-view__demo-time {
+    justify-self: center;
+  }
+
+  .focus-details__timeline li {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .focus-details__timeline small {
+    grid-column: 2;
   }
 }
