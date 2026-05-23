@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { demoNowTime } from '../features/schedule/defaultSession';
 import {
   getCurrentEvent,
   getElapsedPercent,
@@ -15,6 +14,7 @@ import { Hourglass } from './Hourglass';
 
 type FocusViewProps = {
   session: DayglassSession;
+  currentTime: string;
 };
 
 const statusLabels = {
@@ -23,19 +23,19 @@ const statusLabels = {
   finished: '終了',
 };
 
-export function FocusView({ session }: FocusViewProps) {
+export function FocusView({ session, currentTime }: FocusViewProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-  const remainingMinutes = getRemainingMinutes(session, demoNowTime);
-  const status = getSessionStatus(session, demoNowTime);
-  const currentEvent = getCurrentEvent(session.events, demoNowTime);
-  const nextEvent = getNextEvent(session.events, demoNowTime);
-  const progressPercent = getElapsedPercent(session, demoNowTime);
+  const remainingMinutes = getRemainingMinutes(session, currentTime);
+  const status = getSessionStatus(session, currentTime);
+  const currentEvent = getCurrentEvent(session.events, currentTime);
+  const nextEvent = getNextEvent(session.events, currentTime);
+  const progressPercent = getElapsedPercent(session, currentTime);
   const upcomingEvents = sortEventsByStartTime(session.events).filter((event) => {
     if (!event.endTime) {
-      return timeToMinutes(event.startTime) >= timeToMinutes(demoNowTime);
+      return timeToMinutes(event.startTime) >= timeToMinutes(currentTime);
     }
 
-    return timeToMinutes(event.endTime) > timeToMinutes(demoNowTime);
+    return timeToMinutes(event.endTime) > timeToMinutes(currentTime);
   });
   const nextPointLabel = nextEvent
     ? `${nextEvent.startTime} ${nextEvent.title}`
@@ -52,7 +52,7 @@ export function FocusView({ session }: FocusViewProps) {
         <Hourglass progressPercent={progressPercent} />
 
         <div className="focus-view__summary">
-          <p className="focus-view__demo-time">デモ時刻 {demoNowTime}</p>
+          <p className="focus-view__demo-time">現在時刻 {currentTime}</p>
           <p className="focus-view__status">
             <span>{statusLabels[status]}</span>
             <strong>{session.title}</strong>

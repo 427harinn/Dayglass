@@ -18,8 +18,6 @@ export const eventTypeColors: Record<EventType, string> = {
   free: '#8a98a8',
 };
 
-export const demoNowTime = '13:20';
-
 export const defaultSession: DayglassSession = {
   id: 'demo-session',
   date: '2026-05-21',

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { demoNowTime } from '../features/schedule/defaultSession';
 import {
   buildTimelineSegments,
   getElapsedPercent,
@@ -15,14 +14,15 @@ import { Timeline } from './Timeline';
 
 type SetupViewProps = {
   session: DayglassSession;
+  currentTime: string;
   onSessionChange: (session: DayglassSession) => void;
 };
 
-export function SetupView({ session, onSessionChange }: SetupViewProps) {
+export function SetupView({ session, currentTime, onSessionChange }: SetupViewProps) {
   const [editingEvent, setEditingEvent] = useState<DayglassEvent>();
   const timeRangeError = getSessionTimeRangeError(session);
   const timelineSegments = buildTimelineSegments(session);
-  const elapsedPercent = getElapsedPercent(session, demoNowTime);
+  const elapsedPercent = getElapsedPercent(session, currentTime);
   const duration = getSessionDuration(session);
   const sortedEvents = sortEventsByStartTime(session.events);
 
