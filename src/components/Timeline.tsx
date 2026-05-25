@@ -5,6 +5,7 @@ type TimelineProps = {
   elapsedPercent: number;
 };
 
+// Timeline は計算済みの TimelineSegment を受け取り、時刻計算は scheduleUtils に任せる。
 export function Timeline({ segments, elapsedPercent }: TimelineProps) {
   return (
     <div className="timeline" aria-label="Session timeline preview">

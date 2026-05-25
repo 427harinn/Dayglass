@@ -18,6 +18,7 @@ type SetupViewProps = {
   onSessionChange: (session: DayglassSession) => void;
 };
 
+// SetupView は session 項目、event CRUD、timeline preview を扱う編集画面。
 export function SetupView({ session, currentTime, onSessionChange }: SetupViewProps) {
   const [editingEvent, setEditingEvent] = useState<DayglassEvent>();
   const timeRangeError = getSessionTimeRangeError(session);

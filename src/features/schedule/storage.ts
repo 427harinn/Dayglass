@@ -13,6 +13,7 @@ const isString = (value: unknown): value is string => typeof value === 'string';
 const isEventType = (value: unknown): value is EventType =>
   isString(value) && eventTypes.includes(value as EventType);
 
+// storage guard は壊れたデータや古い形式のデータが app state に入るのを防ぐ。
 const isDayglassEvent = (value: unknown): value is DayglassEvent => {
   if (!isObject(value)) {
     return false;
@@ -57,6 +58,7 @@ export const loadSession = (): DayglassSession => {
 
     return isDayglassSession(parsedValue) ? parsedValue : defaultSession;
   } catch {
+    // JSON 解析や storage アクセスに失敗した場合は、同梱のデフォルト session に戻す。
     return defaultSession;
   }
 };
@@ -65,6 +67,6 @@ export const saveSession = (session: DayglassSession) => {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
   } catch {
-    // The app can keep running with in-memory state if browser storage is unavailable.
+    // browser storage が使えない場合も、メモリ上の state でアプリは動き続けられる。
   }
 };

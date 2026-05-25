@@ -23,6 +23,7 @@ const statusLabels = {
   finished: '終了',
 };
 
+// FocusView は通常表示を最小限に保ち、必要なときだけ Details を開く。
 export function FocusView({ session, currentTime }: FocusViewProps) {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const remainingMinutes = getRemainingMinutes(session, currentTime);

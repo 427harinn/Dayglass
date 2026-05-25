@@ -47,6 +47,7 @@ const eventToDraft = (event: DayglassEvent): EventDraft => ({
   memo: event.memo ?? '',
 });
 
+// EventForm は session 基本情報の編集と、event の追加/更新を担当する。
 export function EventForm({
   session,
   editingEvent,
