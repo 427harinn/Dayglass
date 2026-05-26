@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" role="img" aria-label="Dayglass icon">
+  <rect width="192" height="192" rx="42" fill="#f7f4ee"/>
+  <rect x="36" y="28" width="120" height="136" rx="28" fill="#fffdf8" stroke="#20252b" stroke-width="8"/>
+  <path d="M62 48h68M62 144h68" stroke="#20252b" stroke-width="10" stroke-linecap="round"/>
+  <path d="M70 54c0 38 22 48 26 70-4 22-26 32-26 58M122 54c0 38-22 48-26 70 4 22 26 32 26 58" fill="none" stroke="#20252b" stroke-width="8" stroke-linecap="round"/>
+  <path d="M78 70h36L96 116z" fill="#e4b761"/>
+  <path d="M96 126l28 36H68z" fill="#cf8f4f"/>
+  <path d="M96 118v25" stroke="#d7a456" stroke-width="5" stroke-linecap="round"/>
+</svg>

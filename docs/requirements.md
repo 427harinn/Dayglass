@@ -146,3 +146,9 @@ Focus Details は、Focus から必要なときだけ開く詳細表示です。
 4. スマホ専用UI調整
 5. 通知・リマインダー再検討
 6. Web体験が安定した後の iPhone アプリ検討
+
+## PWA Preparation Note
+
+Milestone 6では、PWA対応の最低限の土台のみを準備します。manifest、theme-color、ホーム画面追加に向けた仮アイコンを整備しますが、本格的なPWA機能はまだ実装しません。
+
+Service Worker、オフライン対応、Push通知は後続フェーズで検討します。iPhoneアプリ化やiOS向けの専用体験は、PWA準備後さらに後続のフェーズで検討します。
