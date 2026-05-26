@@ -37,11 +37,27 @@ export type TimelineSegment = {
   id: string;
   title: string;
   type: EventType;
+  typeLabel: string;
   color: string;
   startPercent: number;
   widthPercent: number;
+  labelLevel: 'full' | 'title' | 'none';
+  tooltipAlign: 'left' | 'center' | 'right';
+  lane: number;
   startTime: string;
   endTime: string;
+  memo?: string;
+};
+
+export type TimelineLayout = {
+  segments: TimelineSegment[];
+  nowPercent: number;
+  laneCount: number;
+  startTime: string;
+  endTime: string;
+  nowTime: string;
+  isNowInRange: boolean;
+  nowStatus: SessionStatus;
 };
 
 // HourglassSegment は将来の分割砂時計表示に使う表示用データ。

@@ -1,9 +1,10 @@
-import { eventTypeColors } from './defaultSession';
+import { eventTypeColors, eventTypeLabels } from './defaultSession';
 import type {
   DayglassEvent,
   DayglassSession,
   HourglassSegment,
   SessionStatus,
+  TimelineLayout,
   TimelineSegment,
 } from './scheduleTypes';
 
@@ -152,10 +153,58 @@ export const getCurrentEvent = (
   });
 };
 
+export const getSessionStatusBadgeLabel = (
+  session: DayglassSession,
+  nowTime: string,
+) => {
+  const status = getSessionStatus(session, nowTime);
+
+  if (status === 'beforeStart') {
+    return `開始前 / 現在時刻 ${nowTime}`;
+  }
+
+  if (status === 'finished') {
+    return `セッション終了済み / 現在時刻 ${nowTime}`;
+  }
+
+  const currentEvent = getCurrentEvent(session.events, nowTime);
+  const statusText = currentEvent ? `${currentEvent.title}中` : '予定の合間';
+
+  return `${statusText} / 現在時刻 ${nowTime}`;
+};
+
 export const getEventColor = (event: DayglassEvent) =>
   event.color ?? eventTypeColors[event.type];
 
-// Timeline が時刻計算を知らずに描画できるよう、events をパーセンテージへ変換する。
+const getTimelineLabelLevel = (widthPercent: number): TimelineSegment['labelLevel'] => {
+  if (widthPercent >= 18) {
+    return 'full';
+  }
+
+  if (widthPercent >= 10) {
+    return 'title';
+  }
+
+  return 'none';
+};
+
+const getTimelineTooltipAlign = (
+  startPercent: number,
+  widthPercent: number,
+): TimelineSegment['tooltipAlign'] => {
+  const centerPercent = startPercent + widthPercent / 2;
+
+  if (centerPercent < 14) {
+    return 'left';
+  }
+
+  if (centerPercent > 86) {
+    return 'right';
+  }
+
+  return 'center';
+};
+
 export const buildTimelineSegments = (
   session: DayglassSession,
 ): TimelineSegment[] => {
@@ -166,26 +215,59 @@ export const buildTimelineSegments = (
     return [];
   }
 
+  const laneEnds: number[] = [];
+
   return sortEventsByStartTime(session.events)
     .filter((event) => event.endTime)
     .map((event) => {
       const eventStart = timeToMinutes(event.startTime);
       const eventEnd = timeToMinutes(event.endTime!);
+      const startPercent = clamp(((eventStart - sessionStart) / duration) * 100, 0, 100);
+      const endPercent = clamp(((eventEnd - sessionStart) / duration) * 100, 0, 100);
+      const widthPercent = Math.max(endPercent - startPercent, 0);
+      const lane = laneEnds.findIndex((laneEnd) => laneEnd <= startPercent);
+      const nextLane = lane === -1 ? laneEnds.length : lane;
+
+      laneEnds[nextLane] = Math.max(endPercent, startPercent);
 
       return {
         id: event.id,
         title: event.title,
         type: event.type,
+        typeLabel: eventTypeLabels[event.type],
         color: getEventColor(event),
-        startPercent: clamp(((eventStart - sessionStart) / duration) * 100, 0, 100),
-        widthPercent: clamp(((eventEnd - eventStart) / duration) * 100, 0, 100),
+        startPercent,
+        widthPercent,
+        labelLevel: getTimelineLabelLevel(widthPercent),
+        tooltipAlign: getTimelineTooltipAlign(startPercent, widthPercent),
+        lane: nextLane,
         startTime: event.startTime,
         endTime: event.endTime!,
+        memo: event.memo,
       };
     });
 };
 
-// 残り session を、仮の砂時計表示で使える色付き比率データへ変換する。
+export const buildTimelineLayout = (
+  session: DayglassSession,
+  nowTime: string,
+): TimelineLayout => {
+  const segments = buildTimelineSegments(session);
+  const nowStatus = getSessionStatus(session, nowTime);
+  const laneCount = Math.max(1, ...segments.map((segment) => segment.lane + 1));
+
+  return {
+    segments,
+    nowPercent: getElapsedPercent(session, nowTime),
+    laneCount,
+    startTime: session.startTime,
+    endTime: session.endTime,
+    nowTime,
+    isNowInRange: nowStatus === 'active',
+    nowStatus,
+  };
+};
+
 export const buildHourglassSegments = (
   session: DayglassSession,
   nowTime: string,

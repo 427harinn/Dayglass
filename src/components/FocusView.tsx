@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import {
+  buildTimelineLayout,
   getCurrentEvent,
   getElapsedPercent,
   getNextEvent,
   getRemainingMinutes,
   getSessionStatus,
+  getSessionStatusBadgeLabel,
   minutesToDurationLabel,
   sortEventsByStartTime,
   timeToMinutes,
 } from '../features/schedule/scheduleUtils';
 import type { DayglassSession } from '../features/schedule/scheduleTypes';
 import { Hourglass } from './Hourglass';
+import { Timeline } from './Timeline';
 
 type FocusViewProps = {
   session: DayglassSession;
@@ -31,6 +34,8 @@ export function FocusView({ session, currentTime }: FocusViewProps) {
   const currentEvent = getCurrentEvent(session.events, currentTime);
   const nextEvent = getNextEvent(session.events, currentTime);
   const progressPercent = getElapsedPercent(session, currentTime);
+  const timelineLayout = buildTimelineLayout(session, currentTime);
+  const statusBadgeLabel = getSessionStatusBadgeLabel(session, currentTime);
   const upcomingEvents = sortEventsByStartTime(session.events).filter((event) => {
     if (!event.endTime) {
       return timeToMinutes(event.startTime) >= timeToMinutes(currentTime);
@@ -80,9 +85,12 @@ export function FocusView({ session, currentTime }: FocusViewProps) {
               <span>Focus Details</span>
               <h2>詳細</h2>
             </div>
-            <button className="ghost-button" type="button" onClick={() => setIsDetailsOpen(false)}>
-              閉じる
-            </button>
+            <div className="focus-details__header-actions">
+              <span className="session-status-badge">{statusBadgeLabel}</span>
+              <button className="ghost-button" type="button" onClick={() => setIsDetailsOpen(false)}>
+                閉じる
+              </button>
+            </div>
           </div>
 
           <div className="focus-details__grid">
@@ -92,7 +100,7 @@ export function FocusView({ session, currentTime }: FocusViewProps) {
               <p>
                 {currentEvent
                   ? `${currentEvent.startTime} - ${currentEvent.endTime}`
-                  : 'セッションを続けています。'}
+                  : 'セッションを継続しています。'}
               </p>
             </section>
 
@@ -102,6 +110,8 @@ export function FocusView({ session, currentTime }: FocusViewProps) {
               <p>{nextEvent ? `${nextEvent.startTime} 開始` : `${session.endTime} 終了`}</p>
             </section>
           </div>
+
+          <Timeline layout={timelineLayout} />
 
           <section className="focus-details__timeline" aria-label="Upcoming events">
             <span>今後の予定</span>
