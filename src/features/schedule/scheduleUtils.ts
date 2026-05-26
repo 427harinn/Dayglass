@@ -11,6 +11,7 @@ import type {
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
+// 時刻ヘルパーは、フォームの HH:mm 文字列を分単位の計算へ変換する。
 export const timeToMinutes = (time: string) => {
   const [hours, minutes] = time.split(':').map(Number);
   return hours * 60 + minutes;
@@ -38,6 +39,7 @@ export const sortEventsByStartTime = (events: DayglassEvent[]) =>
 export const getSessionDuration = (session: DayglassSession) =>
   timeToMinutes(session.endTime) - timeToMinutes(session.startTime);
 
+// バリデーションヘルパーは、MVP で扱う session/event の時刻範囲ルールをまとめる。
 export const isSessionTimeRangeValid = (session: DayglassSession) =>
   getSessionDuration(session) > 0;
 
@@ -104,6 +106,7 @@ export const getSessionStatus = (
   return 'active';
 };
 
+// Focus 向けヘルパーは、現在位置や次の予定を UI 側に追加 state を持たせず算出する。
 export const getRemainingMinutes = (
   session: DayglassSession,
   nowTime: string,

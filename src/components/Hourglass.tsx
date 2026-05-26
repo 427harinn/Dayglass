@@ -6,6 +6,7 @@ type HourglassProps = {
   showSegments?: boolean;
 };
 
+// 現時点では仮の砂時計表示。質感、動き、segment 表現は今後作り込む。
 export function Hourglass({ segments = [], progressPercent, showSegments = false }: HourglassProps) {
   const topHeight = Math.max(4, 88 - progressPercent * 0.72);
   const bottomHeight = Math.min(82, progressPercent * 0.72);

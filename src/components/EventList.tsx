@@ -9,6 +9,7 @@ type EventListProps = {
   onDeleteEvent: (eventId: string) => void;
 };
 
+// EventList は event 一覧を表示し、編集/削除の操作は上位へ委譲する。
 export function EventList({
   events,
   editingEventId,
