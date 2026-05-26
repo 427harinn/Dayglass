@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import {
-  buildTimelineSegments,
-  getElapsedPercent,
+  buildTimelineLayout,
   getSessionDuration,
+  getSessionStatusBadgeLabel,
   getSessionTimeRangeError,
   minutesToDurationLabel,
   sortEventsByStartTime,
@@ -21,9 +21,9 @@ type SetupViewProps = {
 export function SetupView({ session, currentTime, onSessionChange }: SetupViewProps) {
   const [editingEvent, setEditingEvent] = useState<DayglassEvent>();
   const timeRangeError = getSessionTimeRangeError(session);
-  const timelineSegments = buildTimelineSegments(session);
-  const elapsedPercent = getElapsedPercent(session, currentTime);
+  const timelineLayout = buildTimelineLayout(session, currentTime);
   const duration = getSessionDuration(session);
+  const statusBadgeLabel = getSessionStatusBadgeLabel(session, currentTime);
   const sortedEvents = sortEventsByStartTime(session.events);
 
   const handleDeleteEvent = (eventId: string) => {
@@ -54,11 +54,14 @@ export function SetupView({ session, currentTime, onSessionChange }: SetupViewPr
       </section>
 
       <section className="setup-panel setup-panel--events">
-        <div className="section-heading">
-          <span>{duration > 0 ? minutesToDurationLabel(duration) : '時間範囲を確認'}</span>
-          <h2>イベント一覧</h2>
+        <div className="section-heading section-heading--with-status">
+          <div>
+            <span>{duration > 0 ? minutesToDurationLabel(duration) : '時間範囲を確認'}</span>
+            <h2>イベント一覧</h2>
+          </div>
+          <span className="session-status-badge">{statusBadgeLabel}</span>
         </div>
-        <Timeline segments={timelineSegments} elapsedPercent={elapsedPercent} />
+        <Timeline layout={timelineLayout} />
         <EventList
           events={sortedEvents}
           editingEventId={editingEvent?.id}
