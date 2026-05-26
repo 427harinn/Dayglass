@@ -189,7 +189,7 @@ select {
 
 input,
 select {
-  min-height: 42px;
+  min-height: 44px;
 }
 
 textarea {
@@ -220,7 +220,7 @@ textarea::placeholder {
 
 .secondary-button {
   width: fit-content;
-  min-height: 42px;
+  min-height: 44px;
   border: 1px solid #20252b;
   border-radius: 7px;
   padding: 0 16px;
@@ -524,7 +524,7 @@ textarea::placeholder {
 
 .ghost-button {
   width: fit-content;
-  min-height: 42px;
+  min-height: 44px;
   border: 1px solid #d9d3c8;
   border-radius: 7px;
   padding: 0 16px;
@@ -618,7 +618,7 @@ textarea::placeholder {
 }
 
 .focus-view__details-button {
-  min-height: 42px;
+  min-height: 44px;
   border: 1px solid #20252b;
   border-radius: 7px;
   padding: 0 18px;
@@ -756,13 +756,14 @@ textarea::placeholder {
 
 @media (max-width: 820px) {
   .app-shell {
-    width: min(100% - 22px, 720px);
+    width: min(100% - 20px, 720px);
     padding-top: 18px;
   }
 
   .app-header {
     align-items: stretch;
     flex-direction: column;
+    gap: 14px;
     padding-bottom: 18px;
   }
 
@@ -791,6 +792,10 @@ textarea::placeholder {
     padding: 18px;
   }
 
+  .setup-panel--events {
+    overflow: visible;
+  }
+
   .form-grid,
   .event-draft {
     grid-template-columns: 1fr;
@@ -807,8 +812,19 @@ textarea::placeholder {
   }
 
   .event-row__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(104px, 1fr));
     grid-column: 2;
     justify-self: start;
+    width: min(100%, 260px);
+  }
+
+  .event-row__delete,
+  .event-row__edit,
+  .secondary-button,
+  .ghost-button,
+  .focus-view__details-button {
+    min-height: 46px;
   }
 
   .focus-view__hero {
@@ -844,5 +860,180 @@ textarea::placeholder {
 
   .focus-details__timeline small {
     grid-column: 2;
+  }
+}
+
+@media (max-width: 520px) {
+  .app-shell {
+    width: calc(100% - 16px);
+    padding: 12px 0 28px;
+  }
+
+  .app-header {
+    padding: 8px 0 14px;
+  }
+
+  .app-header h1 {
+    font-size: 2.4rem;
+  }
+
+  .mode-switch {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mode-switch__button {
+    min-height: 46px;
+  }
+
+  .setup-view {
+    gap: 12px;
+  }
+
+  .setup-panel,
+  .focus-details {
+    padding: 14px;
+  }
+
+  .section-heading {
+    margin-bottom: 16px;
+  }
+
+  .section-heading--with-status {
+    gap: 10px;
+  }
+
+  input,
+  select {
+    min-height: 48px;
+  }
+
+  textarea {
+    min-height: 92px;
+  }
+
+  .form-shell {
+    gap: 16px;
+  }
+
+  .timeline {
+    margin-bottom: 18px;
+  }
+
+  .timeline__stage {
+    min-width: 540px;
+  }
+
+  .event-row {
+    gap: 10px;
+    padding: 11px;
+  }
+
+  .event-row__actions {
+    width: 100%;
+  }
+
+  .event-row__delete,
+  .event-row__edit {
+    padding: 0 10px;
+  }
+
+  .focus-view {
+    gap: 14px;
+    min-height: auto;
+  }
+
+  .focus-view__hero {
+    gap: 16px;
+    min-height: calc(100vh - 150px);
+    padding: 18px 14px 20px;
+  }
+
+  .hourglass {
+    order: 1;
+    gap: 12px;
+  }
+
+  .hourglass svg {
+    width: min(78vw, 300px);
+  }
+
+  .focus-view__time {
+    order: 2;
+  }
+
+  .focus-view__time strong {
+    font-size: clamp(2.4rem, 14vw, 3.6rem);
+  }
+
+  .focus-view__summary {
+    order: 3;
+    width: 100%;
+    gap: 14px;
+  }
+
+  .focus-view__status strong,
+  .focus-view__next-point strong {
+    max-width: min(100%, 24ch);
+  }
+
+  .focus-view__details-button {
+    width: 100%;
+  }
+
+  .focus-details {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2000;
+    max-height: min(82vh, 720px);
+    overflow-y: auto;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -18px 50px rgb(32 37 43 / 0.18);
+  }
+
+  .focus-details__header-actions {
+    width: 100%;
+  }
+
+  .focus-details__header-actions .ghost-button {
+    width: 100%;
+  }
+
+  .current-block {
+    min-height: auto;
+    padding: 16px;
+  }
+
+  .focus-details__timeline li {
+    grid-template-columns: 58px minmax(0, 1fr);
+    gap: 8px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 380px) {
+  .app-shell {
+    width: calc(100% - 12px);
+  }
+
+  .setup-panel,
+  .focus-details {
+    padding: 12px;
+  }
+
+  .app-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .session-status-badge {
+    border-radius: 8px;
+  }
+
+  .event-row__actions {
+    grid-template-columns: 1fr;
   }
 }
