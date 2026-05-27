@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+  buildHourglassSegments,
   buildTimelineLayout,
   getCurrentEvent,
   getElapsedPercent,
@@ -35,6 +36,7 @@ export function FocusView({ session, currentTime }: FocusViewProps) {
   const nextEvent = getNextEvent(session.events, currentTime);
   const progressPercent = getElapsedPercent(session, currentTime);
   const timelineLayout = buildTimelineLayout(session, currentTime);
+  const hourglassSegments = buildHourglassSegments(session, currentTime);
   const statusBadgeLabel = getSessionStatusBadgeLabel(session, currentTime);
   const upcomingEvents = sortEventsByStartTime(session.events).filter((event) => {
     if (!event.endTime) {
@@ -55,7 +57,7 @@ export function FocusView({ session, currentTime }: FocusViewProps) {
           <strong>{minutesToDurationLabel(remainingMinutes)}</strong>
         </div>
 
-        <Hourglass progressPercent={progressPercent} />
+        <Hourglass segments={hourglassSegments} progressPercent={progressPercent} />
 
         <div className="focus-view__summary">
           <p className="focus-view__demo-time">現在時刻 {currentTime}</p>
