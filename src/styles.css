@@ -628,36 +628,116 @@ textarea::placeholder {
 }
 
 .hourglass {
+  --hourglass-current-sand: #8e65ee;
   display: grid;
   justify-items: center;
-  gap: 18px;
+  gap: 14px;
 }
 
 .hourglass svg {
-  width: min(100%, 430px);
+  width: min(100%, 420px);
   height: auto;
-  filter: drop-shadow(0 20px 26px rgb(32 37 43 / 0.12));
+  overflow: visible;
+  filter: drop-shadow(0 22px 28px rgb(59 84 105 / 0.14));
+}
+
+.hourglass__glass-fill {
+  opacity: 0.92;
 }
 
 .hourglass__frame {
   fill: none;
-  stroke: #262b31;
+  stroke: #8da8bb;
   stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.8;
+}
+
+.hourglass__rim {
+  fill: none;
+  stroke: #b3c8d7;
+  stroke-linecap: round;
+  stroke-width: 6;
+}
+
+.hourglass__glass-highlight {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.72);
+  stroke-linecap: round;
+  stroke-width: 8;
+}
+
+.hourglass__glass-highlight--bottom {
   stroke-width: 7;
 }
 
-.hourglass__sand {
-  fill: #e4b761;
+.hourglass__sand-layer {
+  opacity: 0.92;
 }
 
-.hourglass__sand--settled {
-  fill: #cf8f4f;
+.hourglass__sand-sheen {
+  opacity: 0.42;
 }
 
-.hourglass__stream {
-  stroke: #d7a456;
+.hourglass__sand-surface {
+  fill: rgb(255 255 255 / 0.28);
+  stroke: rgb(255 255 255 / 0.34);
+  stroke-width: 1;
+}
+
+.hourglass__sand-surface--bottom {
+  fill: rgb(255 255 255 / 0.18);
+}
+
+.hourglass__settled-sand {
+  opacity: 0.88;
+}
+
+.hourglass__settled-glow {
+  opacity: 0.32;
+}
+
+.hourglass__sand-thread {
+  stroke: var(--hourglass-current-sand);
   stroke-linecap: round;
-  stroke-width: 3;
+  stroke-width: 2;
+  opacity: 0.42;
+}
+
+.hourglass__grain {
+  fill: var(--hourglass-current-sand);
+  opacity: 0.84;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: hourglass-grain-fall 1.28s ease-in infinite;
+}
+
+.hourglass__grain--two {
+  animation-delay: 0.32s;
+}
+
+.hourglass__grain--three {
+  animation-delay: 0.68s;
+}
+
+@keyframes hourglass-grain-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(-13px) scale(0.72);
+  }
+
+  18% {
+    opacity: 0.86;
+  }
+
+  74% {
+    opacity: 0.78;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(34px) scale(0.5);
+  }
 }
 
 .hourglass__segments {
